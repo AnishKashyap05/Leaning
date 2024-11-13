@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  app:
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL_DEV}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME_DEV}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD_DEV}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO_DEV}
+    depends_on:
+      - db
+    networks:
+      - myapp_network1
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: devdb
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME_DEV}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD_DEV}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${SPRING_DATASOURCE_USERNAME_DEV}"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+    networks:
+      - myapp_network1
+
+volumes:
+  postgres_data:
+
+networks:
+  myapp_network1:
+    driver: bridge
