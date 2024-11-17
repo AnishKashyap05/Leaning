@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8091 :8090"  # Exposes 8090 internally but uses 8091 on the host
+      - "8091:8090"  # Exposes 8090 internally but uses 8091 on the host
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
