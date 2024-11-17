@@ -39,7 +39,6 @@ pipeline {
                         ssh root@139.59.15.2 'docker pull $DOCKER_REGISTRY/$APP_NAME:latest && docker-compose up -d'
                         """
                     }
-                    }
                 }
             }
         }
