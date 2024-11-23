@@ -28,16 +28,16 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
-            steps {
-                sshagent(['dockerhub-credentials']) {
-                    sh """
-                    ssh root@139.59.15.2 'docker pull $DOCKER_REGISTRY/$APP_NAME:latest && docker-compose up -d'
-                    """
+         stage('Deploy') {
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            sh """
+                            sshpass -p $PASSWORD ssh $USERNAME@139.59.15.2 'docker pull $DOCKER_REGISTRY/$APP_NAME:latest && docker-compose up -d'
+                            """
+                        }
+                    }
                 }
             }
-        }
-    }
 
     post {
         always {
