@@ -31,14 +31,12 @@ pipeline {
          stage('Deploy') {
                      steps {
                          withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                             sshagent(['dockerhub-credentials']) {
                                  sh """
                                  ssh root@139.59.15.2 '
                                      echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin && \
                                      docker pull $DOCKER_REGISTRY/$APP_NAME:latest && \
                                      docker-compose up -d'
                                  """
-                             }
                          }
                      }
                  }
