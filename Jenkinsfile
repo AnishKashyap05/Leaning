@@ -30,7 +30,7 @@ pipeline {
         }
          stage('Deploy') {
                      steps {
-                         withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                         withCredentials([string(credentialsId: 'docker-password-id', variable: 'DOCKER_PASSWORD')]) {
                                  sh """
                                  ssh root@139.59.15.2 '
                                      echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin && \
