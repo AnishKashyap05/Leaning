@@ -33,6 +33,11 @@ public class UserController {
 
     @GetMapping("/sayHi")
     public String sayHii(){
-        return "sayHii";
+        return "Hii";
+    }
+
+    @GetMapping("/sayGoodBye")
+    public String sayBye(){
+        return "GoodBye";
     }
 }
