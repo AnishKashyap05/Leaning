@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Docker Build & Push') {
             steps {
-                withCredentials([string(credentialsId: 'docker-password-id', variable: 'DOCKER_PASSWORD')]) {
+                 withCredentials([usernamePassword(credentialsId: 'docker-password-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh """
                     docker buildx build --platform linux/amd64 -t $DOCKER_REGISTRY/$APP_NAME:latest .
                     docker login -u $DOCKER_REGISTRY -p $DOCKER_PASSWORD
