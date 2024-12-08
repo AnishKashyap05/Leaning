@@ -44,6 +44,14 @@ pipeline {
                         // Optionally remove the container after stopping
                         sh "docker rm $CONTAINER_NAME"
                     }
+
+                    // Check if any container is occupying port 8090 and stop it
+                    def containerUsingPort = sh(script: "docker ps -q -f 'expose=8090'", returnStdout: true).trim()
+                    if (containerUsingPort) {
+                        echo "Found container occupying port 8090, stopping it."
+                        sh "docker stop $containerUsingPort"
+                        sh "docker rm $containerUsingPort"
+                    }
                 }
             }
         }
