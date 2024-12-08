@@ -39,10 +39,11 @@ pipeline {
                     // Check if a container with the name already exists and stop it
                     def containerId = sh(script: "docker ps -q -f name=$CONTAINER_NAME", returnStdout: true).trim()
                     if (containerId) {
-                        // Stop the running container
-                        sh "docker stop $CONTAINER_NAME"
-                        // Optionally remove the container after stopping
-                        sh "docker rm $CONTAINER_NAME"
+                        echo "Stopping container $CONTAINER_NAME with ID: $containerId"
+                        sh "docker stop $containerId"
+                        sh "docker rm $containerId"
+                    } else {
+                        echo "No existing container found with the name $CONTAINER_NAME"
                     }
 
                     // Check if any container is occupying port 8090 and stop it
