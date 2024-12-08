@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'anishmn'
         APP_NAME = 'spring-boot-app'
+        IMAGE_TAG = 'latest'  // You can change this to a dynamic version or tag
     }
 
     stages {
@@ -17,24 +18,36 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-       stage('Docker Build & Push') {
-                   steps {
-                       withCredentials([usernamePassword(credentialsId: 'docker-password-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                           script {
-                               sh """
-                               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-                               docker build -t $DOCKER_REGISTRY/$APP_NAME:latest .
-                               docker push $DOCKER_REGISTRY/$APP_NAME:latest
-                               """
-                           }
-                       }
-                   }
-               }
-           }
+        stage('Docker Build & Push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-password-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    script {
+                        // Docker login
+                        sh """
+                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                        docker build -t $DOCKER_REGISTRY/$APP_NAME:$IMAGE_TAG .
+                        docker push $DOCKER_REGISTRY/$APP_NAME:$IMAGE_TAG
+                        """
+                    }
+                }
+            }
+        }
+        stage('Pull & Run Docker Image') {
+            steps {
+                script {
+                    // Pull the Docker image from Docker Hub
+                    sh """
+                    docker pull $DOCKER_REGISTRY/$APP_NAME:$IMAGE_TAG
+                    docker run -d -p 8080:8080 $DOCKER_REGISTRY/$APP_NAME:$IMAGE_TAG
+                    """
+                }
+            }
+        }
+    }
 
-           post {
-               always {
-                   echo 'Pipeline execution completed!'
-               }
-           }
-       }
+    post {
+        always {
+            echo 'Pipeline execution completed!'
+        }
+    }
+}
