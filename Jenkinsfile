@@ -17,22 +17,24 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-        stage('Docker Build & Push') {
-            steps {
-                 withCredentials([usernamePassword(credentialsId: 'docker-password-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh """
-                    docker buildx build --platform linux/amd64 -t $DOCKER_REGISTRY/$APP_NAME:latest .
-                    docker login -u $DOCKER_REGISTRY -p $DOCKER_PASSWORD
-                    docker push $DOCKER_REGISTRY/$APP_NAME:latest
-                    """
-                }
-            }
-        }
-     }
+       stage('Docker Build & Push') {
+                   steps {
+                       withCredentials([usernamePassword(credentialsId: 'docker-password-id', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                           script {
+                               sh """
+                               docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                               docker build -t $DOCKER_REGISTRY/$APP_NAME:latest .
+                               docker push $DOCKER_REGISTRY/$APP_NAME:latest
+                               """
+                           }
+                       }
+                   }
+               }
+           }
 
-    post {
-        always {
-            echo 'Pipeline execution completed!'
-        }
-    }
-}
+           post {
+               always {
+                   echo 'Pipeline execution completed!'
+               }
+           }
+       }
