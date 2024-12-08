@@ -53,6 +53,13 @@ pipeline {
                         sh "docker stop $containerUsingPort"
                         sh "docker rm $containerUsingPort"
                     }
+
+                    // Remove any container with the same name as the new one
+                    def existingContainer = sh(script: "docker ps -a -q -f name=$CONTAINER_NAME", returnStdout: true).trim()
+                    if (existingContainer) {
+                        echo "Found an existing container with name $CONTAINER_NAME. Removing it."
+                        sh "docker rm -f $existingContainer"
+                    }
                 }
             }
         }
@@ -62,7 +69,7 @@ pipeline {
                     // Pull the Docker image from Docker Hub
                     sh """
                     docker pull $DOCKER_REGISTRY/$APP_NAME:$IMAGE_TAG
-                    docker run -d --name $CONTAINER_NAME -p 8090:8080 $DOCKER_REGISTRY/$APP_NAME:$IMAGE_TAG
+                    docker run -d --name $CONTAINER_NAME -p 8090:8090 $DOCKER_REGISTRY/$APP_NAME:$IMAGE_TAG
                     """
                 }
             }
