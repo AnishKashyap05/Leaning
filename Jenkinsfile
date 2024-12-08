@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'anishmn'
         APP_NAME = 'spring-boot-app'
-        IMAGE_TAG = 'latest'  // You can change this to a dynamic version or tag
+        IMAGE_TAG = 'latest'
     }
 
     stages {

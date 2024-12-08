@@ -40,4 +40,9 @@ public class UserController {
     public String sayBye(){
         return "GoodBye";
     }
+
+    @GetMapping("/sayGoodBye")
+    public String sayGoodBye(){
+        return "GoodBye";
+    }
 }
