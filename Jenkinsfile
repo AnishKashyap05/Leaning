@@ -38,7 +38,7 @@ pipeline {
                     // Pull the Docker image from Docker Hub
                     sh """
                     docker pull $DOCKER_REGISTRY/$APP_NAME:$IMAGE_TAG
-                    docker run -d -p 8080:8080 $DOCKER_REGISTRY/$APP_NAME:$IMAGE_TAG
+                    docker run -d -p 8090:8090 $DOCKER_REGISTRY/$APP_NAME:$IMAGE_TAG
                     """
                 }
             }
