@@ -28,18 +28,7 @@ pipeline {
                 }
             }
         }
-//          stage('Deploy') {
-//              steps {
-//                  withCredentials([string(credentialsId: 'docker-password-id', variable: 'DOCKER_PASSWORD')]) {
-//                      sh """
-//                      ssh root@139.59.15.2 '
-//                          echo $DOCKER_PASSWORD | docker login -u $DOCKER_REGISTRY --password-stdin && \
-//                          docker pull $DOCKER_REGISTRY/$APP_NAME:latest && \
-//                          docker-compose up -d'
-//                      """
-//                  }
-//              }
-//          }
+     }
 
     post {
         always {
